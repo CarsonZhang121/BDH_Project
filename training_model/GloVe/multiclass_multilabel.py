@@ -13,13 +13,16 @@ import numpy as np
 import random
 import pandas as pd
 import os
+import sys
 
 os.environ['KERAS_BACKEND'] = 'theano'
 STOPWORDS = stopwords.words('English')
 
-# Tunable parameter
-max_sequence_len = 1500
+# Input Parameters
+model_name = "LSTM_MODEL"
+max_sequence_len = 1
 pre_train = False
+output_path = "../outputData/CNN/18Categories/1layer_1words"
 
 # clean the raw text data
 def preprocessor_cleantext(text):
@@ -112,7 +115,6 @@ def LSTM_MODEL(input_shape, output_shape, embedding_layer):
     model.summary()
     return model
 
-
 # CNN model
 def CNN_MODEL(input_shape, output_shape, embedding_layer):
     print("Building Model")
@@ -144,7 +146,8 @@ def CNN_MODEL(input_shape, output_shape, embedding_layer):
 
 # Train Model
 def train(reverse_word_index, embedding_matrix, train_data, train_label, val_data, val_label,
-          test_data, test_label, nb_epoch = 50, batch_size = 128, pre_train = False):
+          test_data, test_label, nb_epoch = 50, batch_size = 128, pre_train = False, model_name = "LSTM_MODEL",
+          output_path = output_path):
     max_sequence_length = train_data.shape[1]
     vocabulary_size = len(reverse_word_index) +1
     embedding_dim = embedding_matrix.shape[1]
@@ -158,8 +161,8 @@ def train(reverse_word_index, embedding_matrix, train_data, train_label, val_dat
                                 trainable = False,
                                 name = 'embedding_layer')
     #model = LSTM_MODEL(input_shape,category_number,embedding_layer)
-
-    model = CNN_MODEL(input_shape,category_number,embedding_layer)
+    model_fun = getattr(sys.modules[__name__],model_name)
+    model = model_fun(input_shape,category_number,embedding_layer)
 
     if not os.path.isdir('../inputData/cache'):
         os.mkdir('../inputData/cache')
@@ -181,6 +184,9 @@ def train(reverse_word_index, embedding_matrix, train_data, train_label, val_dat
               validation_data = [val_data, val_label],
               callbacks = [checkpointer, earlystopping])
 
+    if not os.path.isdir(output_path):
+        os.mkdir(output_path)
+
     # evaluate the model
     # summarize history for accuracy
     fig_acc =plt.figure()
@@ -190,8 +196,7 @@ def train(reverse_word_index, embedding_matrix, train_data, train_label, val_dat
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
     plt.legend(['train','validation'], loc = 'lower right')
-    # plt.show()
-    fig_acc.savefig("../outputData/CNN/18Categories/1layer_1500words/accuracy.png")
+    fig_acc.savefig(os.path.join(output_path,"accuracy.png"))
 
     # summerize history for loss
     fig_loss = plt.figure()
@@ -202,7 +207,7 @@ def train(reverse_word_index, embedding_matrix, train_data, train_label, val_dat
     plt.xlabel('epoch')
     plt.legend(['train', 'validation'], loc='upper right')
     plt.show()
-    fig_loss.savefig("../outputData/CNN/18Categories/1layer_1500words/loss.png")
+    fig_loss.savefig(os.path.join(output_path,"loss.png"))
 
     prediction = model.predict(test_data,batch_size= 128,verbose = 1)
     prediction_int = np.rint(prediction)
@@ -217,7 +222,7 @@ def train(reverse_word_index, embedding_matrix, train_data, train_label, val_dat
     score = model.evaluate(test_data,test_label,verbose = 0)
     # mse - mean squared error; mae - mean absolute error; mape - mean absolute percentage error
     print('{}: {}'.format(model.metrics_names[1], score[1]*100))
-    model.save_weights("../outputData/CNN/18Categories/1layer_1500words/weights_LSTM.h5")
+    model.save_weights(os.path.join(output_path,"weights_LSTM.h5"))
 
 
 print("---Load the raw data---")
@@ -267,5 +272,5 @@ print(mlb.classes_)
 
 train(reverse_word_index, em, train_data, train_label_vector,
       val_data, val_label_vector, test_data, test_label_vector,
-      pre_train = pre_train)
+      pre_train = pre_train, model_name = model_name,output_path = output_path)
 print("---End---")
