@@ -1,2 +1,1 @@
-# Pre-trained GloVe model
-# Dataset for model training, testing
+This folder is used to store (1) pre-trained GloVe model (2) dataset for model training, testing

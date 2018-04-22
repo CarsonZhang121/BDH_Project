@@ -1,2 +1,1 @@
-# Model learning curve
-# Trained model weights
+This folder is used to store model learning curves and trained model weights

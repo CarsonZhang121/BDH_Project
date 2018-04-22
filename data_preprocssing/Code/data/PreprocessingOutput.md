@@ -1,1 +1,1 @@
-# Dataset after preprocessing
+This folder is used to store the dataset after preprocessing
