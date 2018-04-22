@@ -1,1 +1,1 @@
-This folder is used to store the dataset after preprocessing
+This folder is used to store the raw data downloaded from the MIMICIII website and store the dataset after preprocessing
