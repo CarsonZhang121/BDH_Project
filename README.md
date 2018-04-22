@@ -13,13 +13,13 @@ After running the code in main file, all the generated CSV files could be found 
 
 ### Model Training and Testing
 #### (1)Model Preparation
-(i)Download pre-trained GloVe model Common Crawl (840B tokens, 2.2M vocab, cased, 300d vectors, 2.03 GB download) from https://nlp.stanford.edu/projects/glove/; 
-(ii)Unzip the downloaded glove.840B.300d.zip into the /training_model/inputData; 
+(i)Download pre-trained GloVe model Common Crawl (840B tokens, 2.2M vocab, cased, 300d vectors, 2.03 GB download) from https://nlp.stanford.edu/projects/glove/;__
+(ii)Unzip the downloaded glove.840B.300d.zip into the /training_model/inputData;__
 (iii)Copy the corresponding .csv file from /data_preprocessing/data and paste it into the /training_model/inputData;
 #### (2) Parameter Setting
-(i) Open /training_model/GloVe/multiclass_multilabel.py; 
-(ii) Set the input parameters, including the "model_name", max_sequence_len, pre_train, output_path, for the model; Notice that the model_name could be either "LSTM_MODEL" or "CNN_MODEL", "max_sequence_len" is the preferred word sequence length, "pre-train" means loading the trained model weights, "output_path" is to store the output from the model training and testing; 
+(i) Open /training_model/GloVe/multiclass_multilabel.py;__
+(ii) Set the input parameters, including the "model_name", max_sequence_len, pre_train, output_path, for the model; Notice that the model_name could be either "LSTM_MODEL" or "CNN_MODEL", "max_sequence_len" is the preferred word sequence length, "pre-train" means loading the trained model weights, "output_path" is to store the output from the model training and testing;__ 
 #### (3) Model training and testing
-(i) Run /training_model/GloVe/multiclass_multilabel.py; 
-(ii) Find the model training curves and weights in the folder of output_path; 
+(i) Run /training_model/GloVe/multiclass_multilabel.py;__
+(ii) Find the model training curves and weights in the folder of output_path;__
 (iii) Find the Recall, precision, F1 score and accuracy for model testing in python console output.
