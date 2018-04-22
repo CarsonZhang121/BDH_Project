@@ -80,8 +80,8 @@ object main {
 
     val ICD_top20_per_admission = diag_ICD_top.join(ICD_top20,Seq("ICD9_CODE_top"))
       .select($"SUBJECT_ID",$"HADM_ID", $"ICD9_CODE_top").distinct()
-      .groupBy("SUBJECT_ID","HADM_ID").agg(collect_list($"ICD9_CODE_top") as "ICD9_CODES_top20")
-      .withColumn("ICD9_CODES_top20",stringify($"ICD9_CODES_top20"))
+      .groupBy("SUBJECT_ID","HADM_ID").agg(collect_list($"ICD9_CODE_top") as "ICD9_CODES")
+      .withColumn("ICD9_CODES",stringify($"ICD9_CODES"))
 
 
     //import the noteEvents filtered by discharge summary
@@ -126,7 +126,7 @@ object main {
     // export the csv file of all-one icd9code-clinical note by using top20 ICD9code
 
 
-    val Note_top20_ICD9 = ICD_top20_per_admission.join(Note_per_admission,Seq("HADM_ID")).select("HADM_ID","ICD9_CODES_TOP20","TEXT")
+    val Note_top20_ICD9 = ICD_top20_per_admission.join(Note_per_admission,Seq("HADM_ID")).select("HADM_ID","ICD9_CODES","TEXT")
 
     Note_top20_ICD9.coalesce(1)
       .write.format("csv")
