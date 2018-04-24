@@ -19,10 +19,12 @@ os.environ['KERAS_BACKEND'] = 'theano'
 STOPWORDS = stopwords.words('English')
 
 # Input Parameters
-model_name = "LSTM_MODEL"
-max_sequence_len = 1
+model_name = "CNN_MODEL"
+max_sequence_len = 1500
 pre_train = False
-output_path = "../outputData/CNN/18Categories/1layer_1words"
+category_number = 18
+dataset_path = "../inputData/NOTES_18Categories_ICD9.csv"
+output_path = "../outputData/CNN/18Categories/1layer_1500words"
 
 # clean the raw text data
 def preprocessor_cleantext(text):
@@ -147,11 +149,10 @@ def CNN_MODEL(input_shape, output_shape, embedding_layer):
 # Train Model
 def train(reverse_word_index, embedding_matrix, train_data, train_label, val_data, val_label,
           test_data, test_label, nb_epoch = 50, batch_size = 128, pre_train = False, model_name = "LSTM_MODEL",
-          output_path = output_path):
+          output_path = output_path, category_number = 18):
     max_sequence_length = train_data.shape[1]
     vocabulary_size = len(reverse_word_index) +1
     embedding_dim = embedding_matrix.shape[1]
-    category_number = 18
     input_shape = train_data.shape[1:]
 
     embedding_layer = Embedding(vocabulary_size,
@@ -160,7 +161,7 @@ def train(reverse_word_index, embedding_matrix, train_data, train_label, val_dat
                                 input_length=max_sequence_length,
                                 trainable = False,
                                 name = 'embedding_layer')
-    #model = LSTM_MODEL(input_shape,category_number,embedding_layer)
+
     model_fun = getattr(sys.modules[__name__],model_name)
     model = model_fun(input_shape,category_number,embedding_layer)
 
@@ -226,7 +227,7 @@ def train(reverse_word_index, embedding_matrix, train_data, train_label, val_dat
 
 
 print("---Load the raw data---")
-df = pd.read_csv("../inputData/Multi_ICD9_Note.csv")
+df = pd.read_csv(dataset_path)
 
 print("---Output the word_index file---")
 data, word_index, reverse_word_index = createWordSequence(df,max_sequence_len = max_sequence_len)
@@ -272,5 +273,5 @@ print(mlb.classes_)
 
 train(reverse_word_index, em, train_data, train_label_vector,
       val_data, val_label_vector, test_data, test_label_vector,
-      pre_train = pre_train, model_name = model_name,output_path = output_path)
+      pre_train = pre_train, model_name = model_name,output_path = output_path, category_number=category_number)
 print("---End---")
