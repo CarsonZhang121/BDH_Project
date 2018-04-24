@@ -1,7 +1,7 @@
 
 ## Code Notation 
 
-### Data proprocessing
+### Data preprocessing
 
 The data preprocessing was accomplished in scala 2.2.0. The codes could be found in the main file of data_preprocess/code/src while the library dependency would be found in the build.sbt. 
 
